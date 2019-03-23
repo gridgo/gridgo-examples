@@ -9,7 +9,7 @@ import io.gridgo.core.impl.DefaultGridgoContextBuilder;
 import io.gridgo.core.support.impl.BridgeComponent;
 import io.gridgo.example.tiktactoe.comp.TikTacToeGameServer;
 import io.gridgo.example.tiktactoe.comp.TikTacToeHttp;
-import io.gridgo.framework.NonameComponentLifecycle;
+import io.gridgo.framework.impl.NonameComponentLifecycle;
 import io.gridgo.framework.support.Message;
 import io.gridgo.framework.support.Payload;
 
@@ -26,8 +26,7 @@ public class TikTacToe extends NonameComponentLifecycle {
     private final GridgoContext appContext;
 
     public TikTacToe() {
-        this.appContext = new DefaultGridgoContextBuilder().setName("tiktactoe").setExceptionHandler(this::onException)
-                                                           .build();
+        this.appContext = new DefaultGridgoContextBuilder().setName("tiktactoe").setExceptionHandler(this::onException).build();
 
         appContext.openGateway(GATEWAY_HTTP) //
                   .attachConnector("jetty:http://0.0.0.0:8888/[tiktactoe/*]");
@@ -44,15 +43,13 @@ public class TikTacToe extends NonameComponentLifecycle {
                   .attachConnector("zmq:push:ipc://gameToClient");
 
         this.appContext //
-                       // handle http request
+                        // handle http request
                        .attachComponent(new TikTacToeHttp(GATEWAY_HTTP)) //
                        // handle game logic request
                        .attachComponent(new TikTacToeGameServer(GATEWAY_GAME)) //
                        // attach 2 bridge components to fwd msg from/to websocket to/from game via zmq
-                       .attachComponent(
-                               new BridgeComponent(GATEWAY_WEBSOCKET, GATEWAY_FORWARDER, this::forwardMsgWsToGame)) //
-                       .attachComponent(
-                               new BridgeComponent(GATEWAY_FORWARDER, GATEWAY_WEBSOCKET, this::forwardMsgGameToWs)) //
+                       .attachComponent(new BridgeComponent(GATEWAY_WEBSOCKET, GATEWAY_FORWARDER, this::forwardMsgWsToGame)) //
+                       .attachComponent(new BridgeComponent(GATEWAY_FORWARDER, GATEWAY_WEBSOCKET, this::forwardMsgGameToWs)) //
         ;
     }
 
@@ -61,13 +58,9 @@ public class TikTacToe extends NonameComponentLifecycle {
     }
 
     private Message forwardMsgWsToGame(Message input) {
-        Payload payload = input.getPayload();
-        if (payload == null) {
-            payload = Payload.of(null);
-            input.setPayload(payload);
-        }
-        payload.addHeader(SOCKET_MESSAGE_TYPE, input.getMisc().get(SOCKET_MESSAGE_TYPE));
-        payload.addHeader(ROUTING_ID, input.getRoutingId().orElse(BValue.ofEmpty()).getData());
+        Message result = Message.of(input.getPayload() == null ? Payload.of(null) : input.getPayload());
+        result.getPayload().addHeader(SOCKET_MESSAGE_TYPE, input.getMisc().get(SOCKET_MESSAGE_TYPE));
+        result.getPayload().addHeader(ROUTING_ID, input.getRoutingId().orElse(BValue.ofEmpty()).getData());
         return input;
     }
 

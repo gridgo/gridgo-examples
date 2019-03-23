@@ -6,7 +6,7 @@ import io.gridgo.core.GridgoContext;
 import io.gridgo.core.support.ContextAwareComponent;
 import io.gridgo.core.support.RoutingContext;
 import io.gridgo.core.support.subscription.GatewaySubscription;
-import io.gridgo.framework.NonameComponentLifecycle;
+import io.gridgo.framework.impl.NonameComponentLifecycle;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
