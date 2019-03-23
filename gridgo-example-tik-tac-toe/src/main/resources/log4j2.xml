@@ -21,5 +21,6 @@
 			<AppenderRef ref="console" />
 		</Root>
 		<Logger name="io.gridgo" additivity="true" level="debug" />
+		<Logger name="io.gridgo.utils.InetAddressUtils" additivity="true" level="info" />
 	</Loggers>
 </Configuration>
