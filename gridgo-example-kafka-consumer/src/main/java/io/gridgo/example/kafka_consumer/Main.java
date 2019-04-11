@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Main {
 
-    private static final String KAFKA_BROKER = "your_kafka_broker_host:9092";
+    private static final String KAFKA_BROKER = "your_kafka_broker_host:9092"; // replace this config with your
 
     private static final String KAFKA_CONNECTION_URI = "kafka:gridgo_example?brokers=" + KAFKA_BROKER + "&format=json";
 
@@ -38,7 +38,7 @@ public class Main {
                 .attachConnector(KAFKA_PRODUCER); // attach a producer
 
         context.start(); // start this context
-
+        // then sending a greeting message
         context.findGatewayMandatory(PRODUCER_GATEWAY_NAME)
                 .sendWithAck(Message.ofAny(BObject.of("greeting", "hello everyone!")))
                 .done(message -> log.info("Producer send message success!"))
@@ -50,9 +50,9 @@ public class Main {
     private static void handleMessages(RoutingContext rc, GridgoContext gx) {
         var msg = rc.getMessage();
         var deferred = rc.getDeferred();
-        // we just log the message
+        // just log the message
         log.info("Received a message: " + msg.getPayload().getBody().toJson());
-
+        // must do this statement to make a kafka consumer's commit
         deferred.resolve(Message.ofAny("success"));
     }
 }
