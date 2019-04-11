@@ -16,6 +16,7 @@
 		<module>gridgo-example-mongodb-vertx</module>
 		<module>gridgo-example-first-app</module>
 		<module>gridgo-example-tik-tac-toe</module>
+		<module>gridgo-example-kafka-consumer</module>
 	</modules>
 
 	<dependencies>
