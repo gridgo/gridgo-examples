@@ -30,10 +30,17 @@ public class HttpServerGateway extends AbstractProcessor {
     public void process(RoutingContext rc, GridgoContext gc) {
         var msg = rc.getMessage();
         var deferred = rc.getDeferred();
-        // push a received message to kafka
-        producer.sendWithAck(Message.of(Payload.of(msg.getPayload().getBody())))
-                .done(message -> deferred.resolve(
-                        Message.ofAny(BObject.of("message", "we has received your order!"))))
-                .fail(deferred::reject);
+        var requestBody = msg.getPayload().getBody();
+        // check if your payload is blank
+        if (requestBody == null || requestBody.asValue().isNull() || requestBody.asValue().getString().isBlank()) {
+            deferred.resolve(Message.ofAny(BObject.of("message", "you must post something " +
+                    "on your order (payload)!")));
+        } else {
+            // push a received message to kafka
+            producer.sendWithAck(Message.of(Payload.of(requestBody)))
+                    .done(message -> deferred.resolve(
+                            Message.ofAny(BObject.of("message", "we has received your order!"))))
+                    .fail(deferred::reject);
+        }
     }
 }
