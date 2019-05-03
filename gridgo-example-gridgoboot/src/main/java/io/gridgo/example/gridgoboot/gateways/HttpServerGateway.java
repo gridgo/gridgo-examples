@@ -30,8 +30,15 @@ public class HttpServerGateway extends AbstractProcessor {
         var msg = rc.getMessage();
         var deferred = rc.getDeferred();
         // push a received message to kafka
-        producer.sendAnyWithAck(msg.body()) //
-                .map(message -> Message.ofAny(BObject.of("message", "we has received your order!"))) //
-                .forward(deferred);
+        var requestBody = msg.body();
+        // check if your payload is blank
+        if (requestBody == null || requestBody.asValue().isNull() || requestBody.asValue().getString().isBlank()) {
+            deferred.resolve(Message.ofAny(BObject.of("message", "you must post something on your order (payload)!")));
+        } else {
+            // push a received message to kafka
+            producer.sendAnyWithAck(msg.body()) //
+                    .map(message -> Message.ofAny(BObject.of("message", "we has received your order!"))) //
+                    .forward(deferred);
+        }
     }
 }
