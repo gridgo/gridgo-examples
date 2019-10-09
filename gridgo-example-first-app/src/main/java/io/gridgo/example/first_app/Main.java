@@ -18,7 +18,8 @@ public class Main {
      *
      * It will start a HTTP server on port 8080.
      *
-     * After it is running you can access http://localhost:8080 in your browser
+     * After it is running you can access http://localhost:8080 in your browser.
+     * You can then test it e.g <code>curl -X POST http://localhost:8080 -d 'helloworld'</code>
      *
      * @param args
      */
