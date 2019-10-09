@@ -4,11 +4,10 @@ import io.gridgo.core.GridgoContext;
 import io.gridgo.core.impl.DefaultGridgoContextBuilder;
 import io.gridgo.core.support.RoutingContext;
 import io.gridgo.framework.support.Message;
-import io.gridgo.framework.support.Payload;
 
 public class Main {
 
-    private static final String VERTX_URL = "vertx:http://127.0.0.1:8080/";
+    private static final String VERTX_URL = "vertx:http://127.0.0.1:8080/?format=string";
 
     private static final String APPLICATION_NAME = "application";
 
@@ -16,11 +15,11 @@ public class Main {
 
     /**
      * Run the application.
-     * 
+     *
      * It will start a HTTP server on port 8080.
-     * 
+     *
      * After it is running you can access http://localhost:8080 in your browser
-     * 
+     *
      * @param args
      */
     public static void main(String[] args) {
